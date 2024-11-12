@@ -28,45 +28,46 @@ void perform_io_operations()
 {
     int fd = open("testfile.txt", O_CREATE | O_RDWR);
     char line[LINE_LENGTH];
-    int t_start, t_end, lat;
-    int total_lat = 0 int min_lat = 1000000;
-    int max_lat = 0;
-    int latencies[NUM_LINES];
+    int t_start, t_end;
+    int t_write, t_read, t_delete;
+    int t_total;
 
     for (int i = 0; i < NUM_LINES; i++)
     {
         generate_random_line(line);
-
-        // Calculando tempos
+        // Calculando tempo de escrita
         t_start = uptime();
         write(fd, line, strlen(line));
         t_end = uptime();
-        lat = t_end - t_start;
-        latencies[i] = lat;
-        total_lat += lat;
-
-        // Atualizando latencias max e min
-        if (lat > max_lat)
-        {
-            max_lat = lat;
-        }
-        if (lat < min_lat)
-        {
-            min_lat = lat;
-        }
+        t_write += t_end - t_start;
     }
 
-    // Realizar permutações e exclusão do arquivo
+    lseek(fd, 0, 0);
+    for (int i = 0; i < NUM_LINES; i++) {
+        // Calculando tempo de leitura
+        t_start = uptime();
+        read(fd, line, LINE_LENGTH);
+        t_end = uptime();
+        total_read_time += t_end - t_start;
+    }
+
+    // Realizar permutações e exclusão do arquivo e calcular tempo de deleção
     close(fd);
+    t_start = uptime();
     unlink("testfile.txt");
+    t_end = uptime();
+    t_delete += t_end - t_start;
 
-    //
-    int avg_lat = total_lat / NUM_LINES;
-    for (int i = 0; i < NUM_LINES; i++)
-    {
-        float normal_lat = 1.0 - ((float)(latencies[i] - min_lat) / (max_lat - min_lat));
-        printf(1, "Operação %d: Latência Normalizada = %d -> %.2f\n", i + 1, latencies[i], normalized_latency);
-    }
+    int avg_write = t_write / NUM_LINES;
+    int avg_read = t_read / NUM_LINES;
+
+    t_total = avg_write + avg_read + t_delete;
+    float efficiency = 1.0/t_total;
+
+    printf(1, "Tempo médio de escrita: %d ticks\n", avg_write);
+    printf(1, "Tempo médio de leitura: %d ticks\n", avg_read);
+    printf(1, "Tempo de deleção: %d ticks\n", t_delete);
+    printf(1, "Eficiência do sistema de arquivos (E_fs): %.4f\n", efficiency);
 }
 
 int main()

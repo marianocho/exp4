@@ -56,7 +56,7 @@ float fairness(int *exec_times, int total_process)
         sum_x += exec_times[i];
         sum_x_squared += exec_times[i] * exec_times[i];
     }
-    float fair = (float)sum_x / (total_processes * sum_x_squared);
+    float fair = (float)(sum_x*sum_x) / (total_processes * sum_x_squared);
     return fair;
 }
 
@@ -68,6 +68,8 @@ int main(int argc, char *argv[])
     int max_throughput = 0;
     int total_processes = cpu_bound_procs + io_bound_procs;
     int exec_times[total_processes];
+    int sum_throughput = 0;
+    int throughput;
     float fair;
 
     for (int round = 0; round < 30; round++)
@@ -84,11 +86,15 @@ int main(int argc, char *argv[])
         {
             max_throughput = throughput;
         }
-        float normalized_throughput = 1.0 - ((float)(throughput - min_throughput) / (max_throughput - min_throughput));
-        printf(1, "Vazão Normalizada: %.2f\n", normalized_throughput);
+        sum_throughput += throughput;
 
         // Fairness
         fair = fairness(exec_times, total_processes);
+        printf(1, "Justiça entre processos (J_cpu): %.4f\n", fair);
     }
+
+    float mean_throughput = (float)sum_throughput/30;
+    float normalized_throughput = 1.0 - ((mean_throughput - min_throughput) / (max_throughput - min_throughput));
+    printf(1, "Vazão Normalizada: %.2f\n", normalized_throughput);
     exit();
 }
