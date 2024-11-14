@@ -124,7 +124,6 @@ void perform_io_operations() {
 int main() {
     for (int i = 0; i < 5; i++) {  // Reduzido para 5 iterações
         //printf(1, "[IO] Rodada %d\n", i + 1);
-        printf(" . ");
         perform_io_operations();
     }
     exit();
