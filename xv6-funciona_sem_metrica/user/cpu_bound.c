@@ -20,8 +20,16 @@ int rand() {
     return (seed / 65536) % 32768;
 }
 
-// Função para inicializar um grafo aleatório
 void initialize_random_graph(int vertices, int edges) {
+    // Garantir que vertices e edges não excedam os limites
+    if (vertices > MAX_VERTICES) {
+        vertices = MAX_VERTICES; // Limitar ao máximo permitido
+    }
+    
+    if (edges > MAX_EDGES) {
+        edges = MAX_EDGES; // Limitar ao máximo permitido
+    }
+
     // Inicializar todas as arestas como "infinito"
     for (int i = 0; i < vertices; i++) {
         for (int j = 0; j < vertices; j++) {
