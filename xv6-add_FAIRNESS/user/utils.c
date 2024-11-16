@@ -75,13 +75,13 @@ int custom_atoi(char *s) {
 }
 
 // Print an integer with leading zeros to match a specified width
-void print_with_leading_zeros(int number, int width) {
-    char buffer[10];
-    for (int i = width - 1; i >= 0; i--) {
+void print_with_leading_zeros(unsigned int number, int width) {
+    char buffer[7]; // 6 dígitos + '\0'
+    buffer[6] = '\0';
+    for (int i = 5; i >= 0; i--) {
         buffer[i] = '0' + (number % 10);
         number /= 10;
     }
-    buffer[width] = '\0';
     printf(1, "%s", buffer);
 }
 

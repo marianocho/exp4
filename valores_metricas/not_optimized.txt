@@ -1,0 +1,239 @@
+Round 1
+E_fs (File System Efficiency): 0.000387
+M_over (Memory Management Overhead): 0.004310
+J_cpu (Process Fairness): 0.000008
+Execution time of the round: 596 ticks
+Could not calculate the Overall System Performance
+-----------------------------------------
+Round 2
+Normalized Throughput: 0.769570
+E_fs (File System Efficiency): 0.000488
+M_over (Memory Management Overhead): 0.003703
+J_cpu (Process Fairness): 0.000060
+Execution time of the round: 511 ticks
+Overall System Performance (S_perform): 0.193454
+-----------------------------------------
+Round 3
+Normalized Throughput: 0.619944
+E_fs (File System Efficiency): 0.000550
+M_over (Memory Management Overhead): 0.004566
+J_cpu (Process Fairness): 0.000097
+Execution time of the round: 494 ticks
+Overall System Performance (S_perform): 0.156288
+-----------------------------------------
+Round 4
+Normalized Throughput: 0.922773
+E_fs (File System Efficiency): 0.000465
+M_over (Memory Management Overhead): 0.005747
+J_cpu (Process Fairness): 0.000009
+Execution time of the round: 521 ticks
+Overall System Performance (S_perform): 0.232247
+-----------------------------------------
+Round 5
+Normalized Throughput: 0.457853
+E_fs (File System Efficiency): 0.000351
+M_over (Memory Management Overhead): 0.005494
+J_cpu (Process Fairness): 0.000035
+Execution time of the round: 536 ticks
+Overall System Performance (S_perform): 0.115931
+-----------------------------------------
+Round 6
+Normalized Throughput: 0.507651
+E_fs (File System Efficiency): 0.000550
+M_over (Memory Management Overhead): 0.004784
+J_cpu (Process Fairness): 0.000050
+Execution time of the round: 541 ticks
+Overall System Performance (S_perform): 0.128257
+-----------------------------------------
+Round 7
+Normalized Throughput: 0.000000
+E_fs (File System Efficiency): 0.000352
+M_over (Memory Management Overhead): 0.005376
+J_cpu (Process Fairness): 0.000032
+Execution time of the round: 602 ticks
+Overall System Performance (S_perform): 0.251440
+-----------------------------------------
+Round 8
+Normalized Throughput: 0.891092
+E_fs (File System Efficiency): 0.000413
+M_over (Memory Management Overhead): 0.005494
+J_cpu (Process Fairness): 0.000036
+Execution time of the round: 588 ticks
+Overall System Performance (S_perform): 0.224258
+-----------------------------------------
+Round 9
+Normalized Throughput: 0.630456
+E_fs (File System Efficiency): 0.000418
+M_over (Memory Management Overhead): 0.004629
+J_cpu (Process Fairness): 0.000042
+Execution time of the round: 557 ticks
+Overall System Performance (S_perform): 0.158885
+-----------------------------------------
+Round 10
+Normalized Throughput: 0.000000
+E_fs (File System Efficiency): 0.000309
+M_over (Memory Management Overhead): 0.004694
+J_cpu (Process Fairness): 0.000006
+Execution time of the round: 647 ticks
+Overall System Performance (S_perform): 0.251251
+-----------------------------------------
+Round 11
+Normalized Throughput: 0.798517
+E_fs (File System Efficiency): 0.000456
+M_over (Memory Management Overhead): 0.004739
+J_cpu (Process Fairness): 0.000004
+Execution time of the round: 609 ticks
+Overall System Performance (S_perform): 0.200928
+-----------------------------------------
+Round 12
+Normalized Throughput: 0.928557
+E_fs (File System Efficiency): 0.000342
+M_over (Memory Management Overhead): 0.004901
+J_cpu (Process Fairness): 0.000075
+Execution time of the round: 633 ticks
+Overall System Performance (S_perform): 0.233467
+-----------------------------------------
+Round 13
+Normalized Throughput: 0.675998
+E_fs (File System Efficiency): 0.000364
+M_over (Memory Management Overhead): 0.003891
+J_cpu (Process Fairness): 0.000027
+Execution time of the round: 588 ticks
+Overall System Performance (S_perform): 0.170068
+-----------------------------------------
+Round 14
+Normalized Throughput: 0.940252
+E_fs (File System Efficiency): 0.000416
+M_over (Memory Management Overhead): 0.003676
+J_cpu (Process Fairness): 0.000016
+Execution time of the round: 559 ticks
+Overall System Performance (S_perform): 0.236090
+-----------------------------------------
+Round 15
+Normalized Throughput: 0.694068
+E_fs (File System Efficiency): 0.000436
+M_over (Memory Management Overhead): 0.004854
+J_cpu (Process Fairness): 0.000033
+Execution time of the round: 591 ticks
+Overall System Performance (S_perform): 0.174847
+-----------------------------------------
+Round 16
+Normalized Throughput: 0.770107
+E_fs (File System Efficiency): 0.000323
+M_over (Memory Management Overhead): 0.004716
+J_cpu (Process Fairness): 0.000035
+Execution time of the round: 604 ticks
+Overall System Performance (S_perform): 0.193793
+-----------------------------------------
+Round 17
+Normalized Throughput: 0.000000
+E_fs (File System Efficiency): 0.000333
+M_over (Memory Management Overhead): 0.004587
+J_cpu (Process Fairness): 0.000028
+Execution time of the round: 649 ticks
+Overall System Performance (S_perform): 0.251236
+-----------------------------------------
+Round 18
+Normalized Throughput: 0.842897
+E_fs (File System Efficiency): 0.000431
+M_over (Memory Management Overhead): 0.004504
+J_cpu (Process Fairness): 0.000051
+Execution time of the round: 546 ticks
+Overall System Performance (S_perform): 0.211969
+-----------------------------------------
+Round 19
+Normalized Throughput: 0.651257
+E_fs (File System Efficiency): 0.000413
+M_over (Memory Management Overhead): 0.005154
+J_cpu (Process Fairness): 0.000076
+Execution time of the round: 585 ticks
+Overall System Performance (S_perform): 0.164224
+-----------------------------------------
+Round 20
+Normalized Throughput: 0.639157
+E_fs (File System Efficiency): 0.000360
+M_over (Memory Management Overhead): 0.003636
+J_cpu (Process Fairness): 0.000028
+Execution time of the round: 583 ticks
+Overall System Performance (S_perform): 0.160795
+-----------------------------------------
+Round 21
+Normalized Throughput: 0.570897
+E_fs (File System Efficiency): 0.000402
+M_over (Memory Management Overhead): 0.005154
+J_cpu (Process Fairness): 0.000056
+Execution time of the round: 572 ticks
+Overall System Performance (S_perform): 0.144126
+-----------------------------------------
+Round 22
+Normalized Throughput: 0.823767
+E_fs (File System Efficiency): 0.000455
+M_over (Memory Management Overhead): 0.002976
+J_cpu (Process Fairness): 0.000021
+Execution time of the round: 615 ticks
+Overall System Performance (S_perform): 0.206803
+-----------------------------------------
+Round 23
+Normalized Throughput: 0.801738
+E_fs (File System Efficiency): 0.000359
+M_over (Memory Management Overhead): 0.005319
+J_cpu (Process Fairness): 0.000068
+Execution time of the round: 611 ticks
+Overall System Performance (S_perform): 0.201869
+-----------------------------------------
+Round 24
+Normalized Throughput: 0.722412
+E_fs (File System Efficiency): 0.000359
+M_over (Memory Management Overhead): 0.004901
+J_cpu (Process Fairness): 0.000042
+Execution time of the round: 597 ticks
+Overall System Performance (S_perform): 0.181927
+-----------------------------------------
+Round 25
+Normalized Throughput: 0.779502
+E_fs (File System Efficiency): 0.000325
+M_over (Memory Management Overhead): 0.005235
+J_cpu (Process Fairness): 0.000040
+Execution time of the round: 607 ticks
+Overall System Performance (S_perform): 0.196274
+-----------------------------------------
+Round 26
+Normalized Throughput: 0.693144
+E_fs (File System Efficiency): 0.000379
+M_over (Memory Management Overhead): 0.003676
+J_cpu (Process Fairness): 0.000061
+Execution time of the round: 592 ticks
+Overall System Performance (S_perform): 0.174314
+-----------------------------------------
+Round 27
+Normalized Throughput: 0.699039
+E_fs (File System Efficiency): 0.000465
+M_over (Memory Management Overhead): 0.004065
+J_cpu (Process Fairness): 0.000013
+Execution time of the round: 593 ticks
+Overall System Performance (S_perform): 0.175894
+-----------------------------------------
+Round 28
+Normalized Throughput: 0.801738
+E_fs (File System Efficiency): 0.000368
+M_over (Memory Management Overhead): 0.003831
+J_cpu (Process Fairness): 0.000025
+Execution time of the round: 611 ticks
+Overall System Performance (S_perform): 0.201489
+-----------------------------------------
+Round 29
+Normalized Throughput: 0.669356
+E_fs (File System Efficiency): 0.000435
+M_over (Memory Management Overhead): 0.003937
+J_cpu (Process Fairness): 0.000028
+Execution time of the round: 588 ticks
+Overall System Performance (S_perform): 0.168438
+-----------------------------------------
+Round 30
+Normalized Throughput: 0.728204
+E_fs (File System Efficiency): 0.000350
+M_over (Memory Management Overhead): 0.003663
+J_cpu (Process Fairness): 0.000054
+Execution time of the round: 598 ticks
+Overall System Performance (S_perform): 0.183066
+-----------------------------------------
