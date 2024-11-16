@@ -3,90 +3,25 @@
 #include "../user.h"
 #include "../stat.h"
 #include "../fcntl.h"
+#include "utils.h"
 
 #define MAX_PROCS 20  // Maximum number of processes
+#define SCALE_FACTOR 1000000
 
+unsigned int min_throughput = 0;
+unsigned int max_throughput = 0;
+unsigned int avg_throughput = 0;
 int total_processes_completed = 0;
 
-// Custom atoi function to convert string to integer
-int custom_atoi(char *s) {
-    int n = 0;
-    while (*s >= '0' && *s <= '9') {
-        n = n * 10 + (*s - '0');
-        s++;
-    }
-    return n;
-}
-
-// Update read_stats to include alloc and free times
-void read_stats(const char *filename, unsigned int *write_time, unsigned int *read_time, unsigned int *delete_time, unsigned int *alloc_time, unsigned int *free_time) {
-    int fd = open(filename, O_RDONLY);
-    if (fd < 0) {
-        return;
-    }
-
-    char buffer[150];
-    int n = read(fd, buffer, sizeof(buffer) - 1);
-    close(fd);
-
-    if (n <= 0) {
-        return;
-    }
-    buffer[n] = '\0';
-
-    int i = 0;
-    *write_time = custom_atoi(&buffer[i]);
-    while (buffer[i] != ' ' && buffer[i] != '\0') i++;
-    if (buffer[i] == ' ') i++;
-    *read_time = custom_atoi(&buffer[i]);
-    while (buffer[i] != ' ' && buffer[i] != '\0') i++;
-    if (buffer[i] == ' ') i++;
-    *delete_time = custom_atoi(&buffer[i]);
-    while (buffer[i] != ' ' && buffer[i] != '\0') i++;
-    if (buffer[i] == ' ') i++;
-    *alloc_time = custom_atoi(&buffer[i]);
-    while (buffer[i] != ' ' && buffer[i] != '\0') i++;
-    if (buffer[i] == ' ') i++;
-    *free_time = custom_atoi(&buffer[i]);
-}
-
-// Read memory stats from a file
-void read_mem_stats(const char *filename, unsigned int *alloc_time, unsigned int *free_time) {
-    int fd = open(filename, O_RDONLY);
-    if (fd < 0) {
-        return;
-    }
-
-    char buffer[100];
-    int n = read(fd, buffer, sizeof(buffer) - 1);
-    close(fd);
-
-    if (n <= 0) {
-        return;
-    }
-    buffer[n] = '\0';
-
-    int i = 0;
-    *alloc_time = custom_atoi(&buffer[i]);
-    while (buffer[i] != ' ' && buffer[i] != '\0') i++;
-    if (buffer[i] == ' ') i++;
-    *free_time = custom_atoi(&buffer[i]);
-}
-
-// Print an integer with leading zeros to match a specified width
-void print_with_leading_zeros(int number, int width) {
-    char buffer[10];
-    for (int i = width - 1; i >= 0; i--) {
-        buffer[i] = '0' + (number % 10);
-        number /= 10;
-    }
-    buffer[width] = '\0';
-    printf(1, "%s", buffer);
-}
-
 // Main function to run the experiment
-void run_experiment(int cpu_bound_procs, int io_bound_procs) {
+void run_experiment(int cpu_bound_procs, int io_bound_procs, unsigned int *J_cpu_scaled, unsigned int *E_fs_scaled, unsigned int *M_over_scaled, unsigned int *norm_throughput) {
     int start_time = uptime();
+
+    // Resetar métricas antes de cada rodada
+    min_throughput = 0;
+    max_throughput = 0;
+    avg_throughput = 0;
+    total_processes_completed = 0;
 
     int pids[MAX_PROCS];
     int pid_index = 0;
@@ -95,50 +30,54 @@ void run_experiment(int cpu_bound_procs, int io_bound_procs) {
     int end_times[MAX_PROCS];
     int execution_times[MAX_PROCS];
 
-    // Start CPU-bound processes
-    for (int i = 0; i < cpu_bound_procs; i++) {
-        int pid = fork();
-        if (pid < 0) {
-            printf(1, "Error creating cpu_bound process\n");
-            exit();
+    // Inicialize pid_index antes do loop
+    pid_index = 0;
+
+    // Loop para criar processos CPU-bound e IO-bound
+    for (int i = 0; i < cpu_bound_procs || i < io_bound_procs; i++) {
+        if (i < cpu_bound_procs) {
+            int pid = fork();
+            if (pid == 0) {
+                // Executa o processo CPU-bound
+                char *args[] = { "cpu_bound", 0 };
+                exec("cpu_bound", args);
+                exit();
+            } else if (pid > 0) {
+                // Armazena o PID do processo filho
+                pids[pid_index] = pid;
+                start_times[pid_index] = uptime(); // Registra o tempo de início
+                pid_index++;
+            } else {
+                printf(1, "Erro ao criar processo CPU-bound\n");
+            }
         }
-        if (pid == 0) {
-            // Child process
-            char *args[] = { "cpu_bound", 0 };
-            exec("cpu_bound", args);
-            printf(1, "Error executing cpu_bound\n");
-            exit();
-        } else {
-            start_times[pid_index] = uptime();  // Record start time
-            pids[pid_index++] = pid;
+
+        if (i < io_bound_procs) {
+            int pid = fork();
+            if (pid == 0) {
+                // Executa o processo IO-bound
+                char *args[] = { "io_bound", 0 };
+                exec("io_bound", args);
+                exit();
+            } else if (pid > 0) {
+                // Armazena o PID do processo filho
+                pids[pid_index] = pid;
+                start_times[pid_index] = uptime(); // Registra o tempo de início
+                pid_index++;
+            } else {
+                printf(1, "Erro ao criar processo IO-bound\n");
+            }
         }
+
+        // Pausa opcional entre processos
+        sleep(10);
     }
 
-    // Start IO-bound processes
-    for (int i = 0; i < io_bound_procs; i++) {
-        int pid = fork();
-        if (pid < 0) {
-            printf(1, "Error creating io_bound process\n");
-            exit();
-        }
-        if (pid == 0) {
-            // Child process
-            char *args[] = { "io_bound", 0 };
-            exec("io_bound", args);
-            printf(1, "Error executing io_bound\n");
-            exit();
-        } else {
-            start_times[pid_index] = uptime();  // Record start time
-            pids[pid_index++] = pid;
-        }
-        sleep(10); // Pause between process creation
-    }
-
-    // Wait for all child processes to complete
+    // Espera por todos os processos filhos
     for (int i = 0; i < pid_index; i++) {
         int wait_pid = wait();
 
-        // Find the index of the completed process in pids array
+        // Encontrar o índice do processo que terminou
         int idx = -1;
         for (int j = 0; j < pid_index; j++) {
             if (pids[j] == wait_pid) {
@@ -148,17 +87,57 @@ void run_experiment(int cpu_bound_procs, int io_bound_procs) {
         }
 
         if (idx != -1) {
-            end_times[idx] = uptime();          // Record end time
-            execution_times[idx] = end_times[idx] - start_times[idx];  // Calculate execution time
+            end_times[idx] = uptime(); // Registra o tempo de fim
+            execution_times[idx] = end_times[idx] - start_times[idx]; // Calcula o tempo de execução
             total_processes_completed++;
         } else {
-            printf(1, "Unknown PID %d received from wait()\n", wait_pid);
+            printf(1, "PID desconhecido %d recebido do wait()\n", wait_pid);
         }
     }
+
 
     int end_time = uptime();
     int execution_time = end_time - start_time;
 
+    if (execution_time > 0) {
+        // Calcular o throughput da rodada
+        unsigned int current_throughput = (total_processes_completed * SCALE_FACTOR) / execution_time;
+
+        // Atualizar min, max e avg throughput
+        if (min_throughput == 0 || current_throughput < min_throughput) {
+            min_throughput = current_throughput;
+        }
+        if (current_throughput > max_throughput) {
+            max_throughput = current_throughput;
+        }
+        // Atualizar throughput médio usando média ponderada
+        if (avg_throughput == 0) {
+            avg_throughput = current_throughput;
+        } else {
+            avg_throughput = (avg_throughput + current_throughput) / 2;
+        }
+    }
+    if (max_throughput > min_throughput) {
+        unsigned int numerator = 0;
+        unsigned int denominator = max_throughput - min_throughput;
+
+        if (denominator > 0) {
+            numerator = (avg_throughput - min_throughput) * SCALE_FACTOR;
+            *norm_throughput = SCALE_FACTOR - (numerator / denominator);
+
+            if (*norm_throughput > SCALE_FACTOR) {
+                *norm_throughput = SCALE_FACTOR;
+            }
+
+            printf(1, "Throughput: 0.");
+            print_with_leading_zeros(*norm_throughput % SCALE_FACTOR, 6);
+            printf(1, "\n");
+        } else {
+            printf(1, "Could not calculate Normalized Throughput\n");
+        }
+    } else {
+        printf(1, "Could not calculate Normalized Throughput: max_throughput <= min_throughput\n");
+    }
     // Collect stats from io_bound processes
     unsigned int total_write_time = 0;
     unsigned int total_read_time = 0;
@@ -215,9 +194,9 @@ void run_experiment(int cpu_bound_procs, int io_bound_procs) {
     if (num_io_processes > 0) {
         unsigned int total_io_time = total_write_time + total_read_time + total_delete_time;
         if (total_io_time > 0) {
-            int E_fs_scaled = (1000000) / total_io_time; // Scale by 1,000,000
+            *E_fs_scaled = (1000000) / total_io_time;
             printf(1, "E_fs (File System Efficiency): 0.");
-            print_with_leading_zeros(E_fs_scaled % 1000000, 6);
+            print_with_leading_zeros(*E_fs_scaled % 1000000, 6);
             printf(1, "\n");
         } else {
             printf(1, "Total time for file system operations is zero\n");
@@ -229,9 +208,9 @@ void run_experiment(int cpu_bound_procs, int io_bound_procs) {
     // Compute M_over (Memory Management Overhead)
     unsigned int total_mem_time = total_alloc_time + total_free_time;
     if (total_mem_time > 0) {
-        int M_over_scaled = (1000000) / total_mem_time; // Scale by 1,000,000
+        *M_over_scaled = (1000000) / total_mem_time;
         printf(1, "M_over (Memory Management Overhead): 0.");
-        print_with_leading_zeros(M_over_scaled % 1000000, 6);
+        print_with_leading_zeros(*M_over_scaled % 1000000, 6);
         printf(1, "\n");
     } else {
         printf(1, "Total time for memory management is zero\n");
@@ -246,14 +225,19 @@ void run_experiment(int cpu_bound_procs, int io_bound_procs) {
     }
 
     if (sum_exec_times_sq > 0) {
-        double numerator = (double)(sum_exec_times * sum_exec_times);
-        double denominator = (double)(pid_index * sum_exec_times_sq);
-        double J_cpu = numerator / denominator;
-        printf(1, "J_cpu (Process Fairness): ");
-        int J_cpu_scaled = (int)(J_cpu * 1000000); // Scale to 6 decimal places
-        printf(1, "0.");
-        print_with_leading_zeros(J_cpu_scaled % 1000000, 6);
-        printf(1, "\n");
+        unsigned int numerator = (unsigned int)sum_exec_times * sum_exec_times * SCALE_FACTOR;
+        unsigned int denominator = (unsigned int)pid_index * sum_exec_times_sq;
+        if (denominator > 0) {
+            *J_cpu_scaled = (unsigned int)(numerator / denominator);
+            if (*J_cpu_scaled > SCALE_FACTOR) {
+                *J_cpu_scaled = SCALE_FACTOR;
+            }
+            printf(1, "J_cpu (Process Fairness): 0.");
+            print_with_leading_zeros(*J_cpu_scaled % SCALE_FACTOR, 6);
+            printf(1, "\n");
+        } else {
+            printf(1, "Cannot compute J_cpu, denominator is zero\n");
+        }
     } else {
         printf(1, "Cannot compute J_cpu, sum of execution times squared is zero\n");
     }
@@ -277,11 +261,30 @@ int main(int argc, char *argv[]) {
 
     int io_bound_procs = 20 - cpu_bound_procs;
 
+    unsigned int J_cpu_scaled = 0;
+    unsigned int E_fs_scaled = 0;
+    unsigned int M_over_scaled = 0;
+    unsigned int norm_throughput = 0;
+
     // Execute 30 rounds of the experiment
     for (int round = 0; round < 30; round++) {
         printf(1, "Round %d\n", round + 1);
-        run_experiment(cpu_bound_procs, io_bound_procs);
+        run_experiment(cpu_bound_procs, io_bound_procs, &J_cpu_scaled, &E_fs_scaled, &M_over_scaled, &norm_throughput);
     }
+
+    // Calcular o Desempenho Geral do Sistema (S_perform)
+    if (norm_throughput > 0 && J_cpu_scaled > 0 && E_fs_scaled > 0 && M_over_scaled > 0) {
+        unsigned int S_perform = (norm_throughput / 4) + (J_cpu_scaled / 4) + (E_fs_scaled / 4) + (M_over_scaled / 4);
+        if (S_perform > SCALE_FACTOR) {
+            S_perform = SCALE_FACTOR;
+        }
+        printf(1, "Overall System Performance (S_perform): 0.");
+        print_with_leading_zeros(S_perform % SCALE_FACTOR, 6);
+        printf(1, "\n");
+    } else {
+        printf(1, "Could not calculate the Overall System Performance\n");
+    }
+
     printf(1, "Experiment completed with %d processes completed\n", total_processes_completed);
     exit();
 }

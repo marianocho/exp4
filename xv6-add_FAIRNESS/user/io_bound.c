@@ -2,6 +2,7 @@
 #include "../user.h"
 #include "../fcntl.h"
 #include "../stat.h"
+#include "./utils.h"
 
 #define NUM_LINES 20       // Number of lines
 #define LINE_LENGTH 50     // Number of characters per line

@@ -2,6 +2,7 @@
 #include "../user.h"
 #include "../fcntl.h"
 #include "../stat.h"
+#include "utils.h"
 
 #define MAX_VERTICES 200
 #define MAX_EDGES 400
